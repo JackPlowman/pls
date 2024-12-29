@@ -48,7 +48,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
             let folders = fs::read_dir(".")
                 .unwrap()
                 .filter_map(Result::ok)
-                .filter(|entry| entry.file_type().unwrap().is_dir())
+                .filter_map(|entry| entry.file_type().ok().filter(|ft| ft.is_dir()).map(|_| entry))
                 .map(|entry| entry.file_name().into_string().unwrap())
                 .collect::<Vec<_>>();
 
