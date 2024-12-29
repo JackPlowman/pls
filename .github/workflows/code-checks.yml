@@ -11,6 +11,31 @@ permissions:
   packages: read
 
 jobs:
+  check-code-quality:
+    name: Check Code Quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Lint and Format everything except Rust
+      - name: Lint Code Base
+        uses: super-linter/super-linter/slim@v7.2.1
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          LINTER_RULES_PATH: .github/super-linter-configurations
+          YAML_ERROR_ON_WARNING: true
+          VALIDATE_RUST_2015: false
+          VALIDATE_RUST_2018: false
+          VALIDATE_RUST_2021: false
+          VALIDATE_RUST_CLIPPY: false
+
   check-markdown-links:
     name: Check Markdown links
     runs-on: ubuntu-latest
