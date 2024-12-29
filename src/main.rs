@@ -3,6 +3,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use std::fs;
 use std::{error::Error, io};
 use tui::{
     backend::{Backend, CrosstermBackend},
@@ -11,7 +12,6 @@ use tui::{
     widgets::{Block, Borders, List, ListItem},
     Terminal,
 };
-use std::fs;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Set up terminal
@@ -48,7 +48,13 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
             let folders = fs::read_dir(".")
                 .unwrap()
                 .filter_map(Result::ok)
-                .filter_map(|entry| entry.file_type().ok().filter(|ft| ft.is_dir()).map(|_| entry))
+                .filter_map(|entry| {
+                    entry
+                        .file_type()
+                        .ok()
+                        .filter(|ft| ft.is_dir())
+                        .map(|_| entry)
+                })
                 .filter_map(|entry| entry.file_name().into_string().ok())
                 .collect::<Vec<_>>();
 
