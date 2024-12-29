@@ -1,10 +1,9 @@
-
 # ------------------------------------------------------------------------------
 # Rust Commands
 # ------------------------------------------------------------------------------
 
 rust-fmt-check:
-  cargo fmt -- --check
+    cargo fmt -- --check
 
 # ------------------------------------------------------------------------------
 # Prettier - File Formatting
@@ -39,4 +38,3 @@ install-git-hooks:
     cp -f githooks/pre-commit .git/hooks/pre-commit
     cp -f githooks/post-commit .git/hooks/post-commit
     chmod ug+x .git/hooks/*
-
