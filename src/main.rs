@@ -91,9 +91,17 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, state: &mut AppState) -> io::
                 .collect();
 
             let left_list = List::new(items)
-                .block(Block::default().borders(Borders::ALL).title("Current Directory"))
+                .block(
+                    Block::default()
+                        .borders(Borders::ALL)
+                        .title("Current Directory"),
+                )
                 .style(Style::default().fg(Color::White))
-                .highlight_style(Style::default().bg(Color::LightGreen).add_modifier(Modifier::BOLD))
+                .highlight_style(
+                    Style::default()
+                        .bg(Color::LightGreen)
+                        .add_modifier(Modifier::BOLD),
+                )
                 .highlight_symbol(">> ");
 
             // Right pane
@@ -118,9 +126,17 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, state: &mut AppState) -> io::
                 .collect();
 
             let right_list = List::new(right_items)
-                .block(Block::default().borders(Borders::ALL).title("Selected Directory"))
+                .block(
+                    Block::default()
+                        .borders(Borders::ALL)
+                        .title("Selected Directory"),
+                )
                 .style(Style::default().fg(Color::White))
-                .highlight_style(Style::default().bg(Color::LightGreen).add_modifier(Modifier::BOLD))
+                .highlight_style(
+                    Style::default()
+                        .bg(Color::LightGreen)
+                        .add_modifier(Modifier::BOLD),
+                )
                 .highlight_symbol(">> ");
 
             let mut left_state = ListState::default();
@@ -145,9 +161,8 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, state: &mut AppState) -> io::
                 KeyCode::Up => {
                     let contents = get_directory_contents(&state.current_dir);
                     if let Some(selected) = state.left_selected {
-                        state.left_selected = Some(
-                            selected.checked_sub(1).unwrap_or(contents.len() - 1)
-                        );
+                        state.left_selected =
+                            Some(selected.checked_sub(1).unwrap_or(contents.len() - 1));
                         state.right_selected = None;
                     }
                 }
