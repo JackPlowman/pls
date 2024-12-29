@@ -17,3 +17,20 @@ updates:
         update-types:
           - "patch"
           - "minor"
+
+  - package-ecosystem: "cargo"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "01:00"
+      timezone: "Europe/London"
+    target-branch: "main"
+    groups:
+      cargo:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
