@@ -88,6 +88,26 @@ jobs:
         env:
           CARGO_TERM_COLOR: always
 
+  check-rust-linting:
+    name: Check Rust Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Just
+        uses: extractions/setup-just@v2
+      - name: Setup Rust Toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+        with:
+          components: clippy
+      - name: Check Rust Format
+        run: just rust-lint-check
+        env:
+          CARGO_TERM_COLOR: always
+
   run-zizmor:
     name: Check GitHub Actions with zizmor
     runs-on: ubuntu-latest

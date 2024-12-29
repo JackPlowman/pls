@@ -2,8 +2,21 @@
 # Rust Commands
 # ------------------------------------------------------------------------------
 
+# Check for Rust clippy issues
+rust-lint-check:
+    cargo clippy
+
+# Fix Rust clippy issues
+rust-lint-fix:
+    cargo clippy --fix
+
+# Check for Rust formatting issues
 rust-fmt-check:
     cargo fmt -- --check
+
+# Fix Rust formatting issues
+rust-fmt:
+    cargo fmt
 
 # ------------------------------------------------------------------------------
 # Prettier - File Formatting
