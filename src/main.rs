@@ -5,7 +5,7 @@ use crossterm::{
 };
 use std::fs;
 use std::path::PathBuf;
-use std::{error::Error, io};
+use std::{error::Error, io, env};
 use tui::{
     backend::{Backend, CrosstermBackend},
     layout::{Constraint, Direction, Layout},
@@ -18,6 +18,7 @@ struct AppState {
     current_dir: PathBuf,
     left_selected: Option<usize>,
     right_selected: Option<usize>,
+    selected_path: Option<PathBuf>,
 }
 
 impl AppState {
@@ -26,6 +27,7 @@ impl AppState {
             current_dir: PathBuf::from("."),
             left_selected: Some(0),
             right_selected: None,
+            selected_path: None,
         }
     }
 }
@@ -64,6 +66,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if let Err(err) = result {
         println!("{:?}", err)
+    }
+
+    if let Some(selected_path) = state.selected_path {
+        if selected_path.is_dir() {
+            // Output cd command for shell to execute
+            println!("cd {:?}", selected_path.display());
+        }
     }
 
     Ok(())
@@ -169,10 +178,26 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, state: &mut AppState) -> io::
                 KeyCode::Enter => {
                     let contents = get_directory_contents(&state.current_dir);
                     if let Some(selected) = state.left_selected {
-                        if let Some((name, true)) = contents.get(selected) {
-                            state.current_dir.push(name);
-                            state.left_selected = Some(0);
-                            state.right_selected = None;
+                        if let Some((name, is_dir)) = contents.get(selected) {
+                            let mut selected_path = state.current_dir.clone();
+                            selected_path.push(name);
+
+                            if *is_dir {
+                                state.current_dir.push(name);
+                                state.left_selected = Some(0);
+                                state.right_selected = None;
+                                // Remove env::set_current_dir call here
+                                // Only open the directory
+                                if let Err(e) = open::that(&selected_path) {
+                                    eprintln!("Failed to open directory: {}", e);
+                                }
+                            } else {
+                                // Open the file
+                                if let Err(e) = open::that(&selected_path) {
+                                    eprintln!("Failed to open file: {}", e);
+                                }
+                            }
+                            state.selected_path = Some(selected_path);
                         }
                     }
                 }
